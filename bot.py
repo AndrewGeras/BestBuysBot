@@ -2,16 +2,13 @@ import asyncio
 
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
-from aiogram.fsm.storage.redis import RedisStorage
-from handlers import handler
+
 from config_data.config import Config, load_config
+
+from handlers import mmc_handlers, item_list_handlers
 from storages.storages import storage
 from keyboards.main_menu import set_main_menu
-from aiogram.fsm.storage.memory import MemoryStorage
 
-
-# storage = RedisStorage(redis=handler.redis)
-# storage = MemoryStorage()
 
 async def main():
     config: Config = load_config()
@@ -20,7 +17,8 @@ async def main():
 
     await set_main_menu(bot)
 
-    dp.include_router(handler.router)
+    dp.include_router(mmc_handlers.router)
+    dp.include_router(item_list_handlers.router)
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)

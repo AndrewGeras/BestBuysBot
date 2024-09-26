@@ -1,5 +1,3 @@
-import asyncio
-from aiofiles import open as aio_open
 from lexicon import lexicon
 import json
 
