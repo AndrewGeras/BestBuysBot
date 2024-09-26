@@ -5,12 +5,13 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.redis import RedisStorage
 from handlers import handler
 from config_data.config import Config, load_config
-from handlers.handler import redis
+from storages.storages import storage
 from keyboards.main_menu import set_main_menu
+from aiogram.fsm.storage.memory import MemoryStorage
 
 
-storage = RedisStorage(redis=handler.redis)
-
+# storage = RedisStorage(redis=handler.redis)
+# storage = MemoryStorage()
 
 async def main():
     config: Config = load_config()
