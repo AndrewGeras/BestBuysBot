@@ -18,5 +18,8 @@ class FSMEditItemsList(StatesGroup):
     delete_item = State()
 
 
-class FSMEditStoreList(FSMAbstract):
-    pass
+class FSMEditStoreList(StatesGroup):
+    waiting_for_choice = State()
+    input_item = State()
+    change_list = State()
+    delete_item = State()
