@@ -3,7 +3,6 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.filters import CommandStart, StateFilter, Command
 from aiogram.fsm.state import default_state
 from aiogram.fsm.context import FSMContext
-from redis.cluster import command
 
 from lexicon.lexicon import LEXICON_COMMANDS, LEXICON_BTN
 from utils import utils
@@ -50,7 +49,7 @@ async def process_eil_command(message: Message, state: FSMContext):
     await state.set_data(user_data)
 
     await message.answer(
-        text=utils.get_item_list(user_data['items']),
+        text=utils.get_item_list(user_data['items'], list_of='items'),
         reply_markup=edit_item_list_kb_markup)
     await state.set_state(FSMEditItemsList.waiting_for_choice)
 

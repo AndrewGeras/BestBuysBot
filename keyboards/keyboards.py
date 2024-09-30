@@ -1,12 +1,17 @@
 from aiogram.types import (InlineKeyboardButton,InlineKeyboardMarkup,
                            KeyboardButton,ReplyKeyboardMarkup)
 
-from lexicon.lexicon import LEXICON_BTN as btns
+from lexicon.lexicon import LEXICON_BTN as btns, LEXICON_COMMANDS as cmds
 
 
 # 'cancel' button
 cancel_btn = KeyboardButton(text=btns['cancel'])
 cancel_kb = ReplyKeyboardMarkup(keyboard=[[cancel_btn]], resize_keyboard=True)
+
+
+# 'stop' button
+stop_btn = KeyboardButton(text=btns['stop'])
+stop_kb = ReplyKeyboardMarkup(keyboard=[[stop_btn]], resize_keyboard=True)
 
 
 #create 'yes/no' keyboard
@@ -28,17 +33,13 @@ add_item_btn = InlineKeyboardButton(
     text=btns['add_item'],
     callback_data='add_item'
 )
-show_item_list = InlineKeyboardButton(
-    text=btns['show_list'],
-    callback_data='show_list'
-)
 del_item_btn = InlineKeyboardButton(
     text=btns['del_item'],
     callback_data='del_item'
 )
 fin_edit_btn = InlineKeyboardButton(
-    text=btns['cancel'],
-    callback_data='cancel'
+    text=btns['stop'],
+    callback_data='stop'
 )
 
 edit_item_list_kb_markup = InlineKeyboardMarkup(
@@ -46,7 +47,6 @@ edit_item_list_kb_markup = InlineKeyboardMarkup(
 )
 
 def create_list_keyboard(items: list[str]):
-    return InlineKeyboardMarkup(
-        inline_keyboard=[[InlineKeyboardButton(text=item,
-                                               callback_data=item)] for item in items]
-    )
+    inline = [[InlineKeyboardButton(text=f"{n}. {item}", callback_data=item)] for n, item in enumerate(items, 1)]
+    inline.append([InlineKeyboardButton(text=btns['cancel'], callback_data='cancel')])
+    return InlineKeyboardMarkup(inline_keyboard=inline)

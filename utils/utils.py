@@ -2,6 +2,7 @@ from lexicon import lexicon
 import json
 from typing import Any
 
+from lexicon.lexicon import LEXICON
 
 db_path = 'db.json'
 
@@ -32,7 +33,7 @@ def get_user_data(uid: int, path: str=db_path) -> dict:
 
 
 def save_user_data(uid: int, user_data: dict[str, Any] | list[str], path: str=db_path):
-    print('save_user_data')
+    # print('save_user_data')
     with open(path, encoding='utf-8') as db:
         data: dict[str, Any] = json.load(db)
 
@@ -41,9 +42,9 @@ def save_user_data(uid: int, user_data: dict[str, Any] | list[str], path: str=db
     with open(path, 'w', encoding='utf-8') as db:
         json.dump(data, db, indent=4, ensure_ascii=False)
 
-    print(f"данные пользователя сохранены '{uid}' в БД")
+    # print(f"данные пользователя сохранены '{uid}' в БД")
 
 
-def get_item_list(items):
-    return "\n".join(
-        f"<b><i>{n}. {item}</i></b>" for n, item in enumerate(items, 1)) if items else "<b>Список пока пуст</b>"
+def get_item_list(items, list_of: str):
+    return f"Изменить {LEXICON[list_of]}?\n\n" + "\n".join(
+           f"<b><i>{n}. {item}</i></b>" for n, item in enumerate(items, 1)) if items else "<b>Список пока пуст</b>"
