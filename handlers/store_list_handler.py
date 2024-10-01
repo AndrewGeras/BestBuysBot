@@ -8,7 +8,7 @@ from typing import Any
 
 # from keyboards.keyboards import cancel_kb
 from lexicon.lexicon import LEXICON_BTN, LEXICON
-from states.states import FSMEditItemsList as FSMstate
+from states.states import FSMEditStoreList as FSMstate
 from lexicon import lexicon
 from keyboards import keyboards
 from utils import utils
@@ -21,7 +21,7 @@ router = Router()
 async def process_stop_adding(message: Message, state: FSMContext):
     user_data = await state.get_data()
     await message.answer(
-        text=utils.get_item_list(user_data['items'], list_of='items'),
+        text=utils.get_item_list(user_data['stores'], list_of='stores'),
         reply_markup=keyboards.edit_item_list_kb_markup)
     await state.set_state(FSMstate.waiting_for_choice)
     await message.delete()
@@ -38,14 +38,14 @@ async def process_cancel_callback(callback: CallbackQuery, state: FSMContext):
 
 @router.callback_query(StateFilter(FSMstate.waiting_for_choice), F.data.in_(('add_item', 'yes')))
 async def process_choose_add_item(callback: CallbackQuery, state: FSMContext):
-    await callback.message.edit_text(text=LEXICON['send_item'])
+    await callback.message.edit_text(text=LEXICON['send_store'])
     await state.set_state(FSMstate.input_item)
 
 
 @router.callback_query(StateFilter(FSMstate.waiting_for_choice), F.data == 'del_item')
 async def process_choose_del_item(callback: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
-    item_list = user_data['items']
+    item_list = user_data['stores']
     if item_list:
         await callback.message.edit_text(text=LEXICON['choice_item'],
                                          reply_markup=keyboards.create_list_keyboard(item_list))
@@ -61,11 +61,11 @@ async def process_choose_del_item(callback: CallbackQuery, state: FSMContext):
 async def process_input_item(message: Message, state: FSMContext):
     user_data: dict[str, Any] = await state.get_data()
     item = message.text[:30]
-    if item in user_data['items']:
+    if item in user_data['stores']:
         await message.answer(text=f'<b>{item}</b> {LEXICON["in_list"]}',
                              reply_markup=keyboards.stop_kb)
     else:
-        user_data['items'].append(item)
+        user_data['stores'].append(item)
         await message.answer(text=f'<b>{item}</b> {LEXICON["got_it"]}',
                              reply_markup=keyboards.stop_kb)
         await state.update_data(user_data)
@@ -76,7 +76,7 @@ async def process_cancel_delete(callback: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     await state.set_state(FSMstate.waiting_for_choice)
     await callback.message.answer(
-        text=utils.get_item_list(user_data['items'], list_of='items'),
+        text=utils.get_item_list(user_data['stores'], list_of='stores'),
         reply_markup=keyboards.edit_item_list_kb_markup)
     await callback.message.delete()
 
@@ -85,10 +85,10 @@ async def process_cancel_delete(callback: CallbackQuery, state: FSMContext):
 async def process_item_delete(callback: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     item = callback.data
-    user_data['items'].remove(item)
+    user_data['stores'].remove(item)
     await state.set_data(user_data)
     await callback.message.edit_text(text=f'<b>{item}</b> {LEXICON["cross_out"]}'
-                                          f'{utils.get_item_list(user_data['items'], list_of='items')}',
+                                          f'{utils.get_item_list(user_data['stores'], list_of='stores')}',
                                      reply_markup=keyboards.edit_item_list_kb_markup)
     await state.set_state(FSMstate.waiting_for_choice)
 

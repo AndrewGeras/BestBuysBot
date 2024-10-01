@@ -7,9 +7,8 @@ from aiogram.fsm.context import FSMContext
 from lexicon.lexicon import LEXICON_COMMANDS, LEXICON_BTN
 from utils import utils
 from lexicon import lexicon
-from storages.storages import redis
 from states.states import FSMEditItemsList, FSMEditStoreList
-from keyboards.keyboards import cancel_kb, edit_item_list_kb_markup
+from keyboards.keyboards import cancel_kb, create_list_kb_markup, edit_item_list_kb_markup
 
 from typing import Any
 
@@ -50,7 +49,7 @@ async def process_eil_command(message: Message, state: FSMContext):
 
     await message.answer(
         text=utils.get_item_list(user_data['items'], list_of='items'),
-        reply_markup=edit_item_list_kb_markup)
+        reply_markup=create_list_kb_markup('item'))
     await state.set_state(FSMEditItemsList.waiting_for_choice)
 
 
@@ -61,9 +60,9 @@ async def process_esl_command(message: Message, state: FSMContext):
     user_data: dict[str, Any] = utils.get_user_data(uid)
 
     await state.set_data(user_data)
-    # await message.answer(
-    #     text='',
-    #     reply_markup=cancel_kb)
+    await message.answer(
+        text=utils.get_item_list(user_data['stores'], list_of='stores'),
+        reply_markup=create_list_kb_markup('store'))
     await state.set_state(FSMEditStoreList.waiting_for_choice)
 
 
