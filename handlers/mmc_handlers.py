@@ -4,13 +4,15 @@ from aiogram.filters import CommandStart, StateFilter, Command
 from aiogram.fsm.state import default_state
 from aiogram.fsm.context import FSMContext
 
-from lexicon.lexicon import LEXICON_COMMANDS, LEXICON_BTN
+from lexicon.lexicon import LEXICON_COMMANDS, LEXICON_BTN, LEXICON
 from utils import utils
 from lexicon import lexicon
-from states.states import FSMEditItemsList, FSMEditStoreList
-from keyboards.keyboards import cancel_kb, create_list_kb_markup, edit_item_list_kb_markup
+from states.states import FSMEditItemsList, FSMEditStoreList, FSMEditMatrix
+from keyboards.keyboards import cancel_kb, create_list_kb_markup, create_list_keyboard, edit_item_list_kb_markup
 
 from typing import Any
+
+from pprint import pprint
 
 
 """Here are collected main menu commands handlers"""
@@ -48,7 +50,7 @@ async def process_eil_command(message: Message, state: FSMContext):
     await state.set_data(user_data)
 
     await message.answer(
-        text=utils.get_item_list(user_data['items'], list_of='items'),
+        text=f"{LEXICON['chg_items']}\n\n{utils.get_item_list(user_data['items'])}",
         reply_markup=create_list_kb_markup('item'))
     await state.set_state(FSMEditItemsList.waiting_for_choice)
 
@@ -61,9 +63,27 @@ async def process_esl_command(message: Message, state: FSMContext):
 
     await state.set_data(user_data)
     await message.answer(
-        text=utils.get_item_list(user_data['stores'], list_of='stores'),
+        text=f"{LEXICON['chg_items']}\n\n{utils.get_item_list(user_data['stores'])}",
         reply_markup=create_list_kb_markup('store'))
     await state.set_state(FSMEditStoreList.waiting_for_choice)
+
+
+@router.message(Command(commands='edit_matrix'), StateFilter(default_state))
+async def process_edit_mtrx_command(message: Message, state: FSMContext):
+    """This handler processes 'edit matrix'-command"""
+    uid = message.from_user.id
+    user_data: dict[str, Any] = utils.get_user_data(uid)
+    if user_data['items'] and user_data['stores']:
+        if not user_data['matrix']:
+            user_data['matrix'].update(utils.get_default_matrix(user_data))
+        await message.answer(
+            text=LEXICON['chs_store'],
+            reply_markup=create_list_keyboard(user_data['stores'])
+        )
+        await state.set_state(FSMEditMatrix.wait_for_store_chs)
+        await state.set_data(user_data)
+    else:
+        await message.answer(text=LEXICON['fill_list'])
 
 
 # @router.message(F.text == LEXICON_BTN['cancel'])

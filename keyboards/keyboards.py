@@ -62,7 +62,13 @@ def create_list_kb_markup(item_type: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[[add_btn, del_btn], [fin_btn]])
 
 
-def create_list_keyboard(items: list[str]):
-    inline = [[InlineKeyboardButton(text=f"{n}. {item}", callback_data=item)] for n, item in enumerate(items, 1)]
+def create_list_keyboard(items: list[str]) -> InlineKeyboardMarkup:
+    """create list of items or stores as inline keyboard"""
+    if isinstance(items, list):
+        inline = [[InlineKeyboardButton(text=item, callback_data=item)] for item in items]
+    if isinstance(items, dict):
+        inline = [[InlineKeyboardButton(text=f"{item} >> {price if price else 'н/д'}",
+                                        callback_data=item)]
+                  for item, price in items.items()]
     inline.append([InlineKeyboardButton(text=btns['cancel'], callback_data='cancel')])
     return InlineKeyboardMarkup(inline_keyboard=inline)

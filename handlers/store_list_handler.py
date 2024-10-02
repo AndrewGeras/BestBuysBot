@@ -21,7 +21,7 @@ router = Router()
 async def process_stop_adding(message: Message, state: FSMContext):
     user_data = await state.get_data()
     await message.answer(
-        text=utils.get_item_list(user_data['stores'], list_of='stores'),
+        text=f"{LEXICON['chg_items']}\n\n{utils.get_item_list(user_data['stores'])}",
         reply_markup=keyboards.edit_item_list_kb_markup)
     await state.set_state(FSMstate.waiting_for_choice)
     await message.delete()
@@ -60,14 +60,16 @@ async def process_choose_del_item(callback: CallbackQuery, state: FSMContext):
 @router.message(StateFilter(FSMstate.input_item), F.text)
 async def process_input_item(message: Message, state: FSMContext):
     user_data: dict[str, Any] = await state.get_data()
-    item = message.text[:30]
-    if item in user_data['stores']:
-        await message.answer(text=f'<b>{item}</b> {LEXICON["in_list"]}',
+    stores = user_data['stores']
+    store = message.text[:30]
+    if store in stores:
+        await message.answer(text=f'<b>{store}</b> {LEXICON["in_list"]}',
                              reply_markup=keyboards.stop_kb)
     else:
-        user_data['stores'].append(item)
-        await message.answer(text=f'<b>{item}</b> {LEXICON["got_it"]}',
+        stores.append(store)
+        await message.answer(text=f'<b>{store}</b> {LEXICON["got_it"]}',
                              reply_markup=keyboards.stop_kb)
+        user_data['stores'] = stores
         await state.update_data(user_data)
 
 
@@ -76,7 +78,7 @@ async def process_cancel_delete(callback: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     await state.set_state(FSMstate.waiting_for_choice)
     await callback.message.answer(
-        text=utils.get_item_list(user_data['stores'], list_of='stores'),
+        text=f"{LEXICON['chg_stores']}\n\n{utils.get_item_list(user_data['stores'])}",
         reply_markup=keyboards.edit_item_list_kb_markup)
     await callback.message.delete()
 
@@ -87,8 +89,8 @@ async def process_item_delete(callback: CallbackQuery, state: FSMContext):
     item = callback.data
     user_data['stores'].remove(item)
     await state.set_data(user_data)
-    await callback.message.edit_text(text=f'<b>{item}</b> {LEXICON["cross_out"]}'
-                                          f'{utils.get_item_list(user_data['stores'], list_of='stores')}',
+    await callback.message.edit_text(text=f'<b>{item}</b> {LEXICON["cross_out"]}\n\n'
+                                          f"{LEXICON['chg_stores']}\n\n{utils.get_item_list(user_data['stores'])}",
                                      reply_markup=keyboards.edit_item_list_kb_markup)
     await state.set_state(FSMstate.waiting_for_choice)
 

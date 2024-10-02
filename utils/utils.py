@@ -45,6 +45,14 @@ def save_user_data(uid: int, user_data: dict[str, Any] | list[str], path: str=db
     # print(f"данные пользователя сохранены '{uid}' в БД")
 
 
-def get_item_list(items, list_of: str):
-    return f"Изменить {LEXICON[list_of]}?\n\n" + "\n".join(
-           f"<b><i>{n}. {item}</i></b>" for n, item in enumerate(items, 1)) if items else "<b>Список пока пуст</b>"
+def get_item_list(items):
+    return "\n".join(
+        f"<b><i>{n}. {item}</i></b>" for n, item in enumerate(items, 1)) if items else "<b>Список пока пуст</b>"
+
+
+def get_default_matrix(user_data: dict):
+    items = user_data['items']
+    stores = user_data['stores']
+    return {store: {item: None for item in items} for store in stores}
+
+
