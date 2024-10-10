@@ -73,7 +73,11 @@ async def process_edit_mtrx_command(message: Message, state: FSMContext):
     """This handler processes 'edit matrix'-command"""
     uid = message.from_user.id
     user_data: dict[str, Any] = utils.get_user_data(uid)
-    if user_data['items'] and user_data['stores']:
+    if not user_data['items']:
+        await message.answer(text=LEXICON['fill_item_list'])
+    elif not user_data['stores']:
+        await message.answer(text=LEXICON['fill_store_list'])
+    else:
         if not user_data['matrix']:
             user_data['matrix'].update(utils.get_default_matrix(user_data))
         await message.answer(
@@ -82,8 +86,6 @@ async def process_edit_mtrx_command(message: Message, state: FSMContext):
         )
         await state.set_state(FSMEditMatrix.wait_for_store_chs)
         await state.set_data(user_data)
-    else:
-        await message.answer(text=LEXICON['fill_list'])
 
 
 # @router.message(F.text == LEXICON_BTN['cancel'])

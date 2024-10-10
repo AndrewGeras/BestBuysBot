@@ -28,6 +28,7 @@ async def process_stop_adding(message: Message, state: FSMContext):
 async def process_cancel_callback(callback: CallbackQuery, state: FSMContext):
     uid = callback.from_user.id
     user_data = await state.get_data()
+    user_data = utils.update_items(user_data)
     utils.save_user_data(uid, user_data)
     await state.clear()
     await callback.message.delete()
