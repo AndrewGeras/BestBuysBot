@@ -1,6 +1,7 @@
 from lexicon import lexicon
 import json
 from typing import Any
+from itertools import chain
 
 from lexicon.lexicon import LEXICON
 
@@ -100,3 +101,18 @@ def get_default_matrix(user_data: dict):
     return {store: {item: None for item in items} for store in stores}
 
 
+def is_empty_prices(matrix):
+    return not any(chain.from_iterable(_.values() for _ in matrix.values()))
+
+
+def get_best_price(user_data: dict[str, Any]):
+    items = user_data['items']
+    matrix = user_data['matrix']
+
+
+
+    return '\n'.join(user_data['items'])
+
+
+def get_best_in_store(user_data: dict[str, Any]) -> str:
+    return '\n'.join(user_data['items'])

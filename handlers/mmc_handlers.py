@@ -7,8 +7,8 @@ from aiogram.fsm.context import FSMContext
 from lexicon.lexicon import LEXICON_COMMANDS, LEXICON_BTN, LEXICON
 from utils import utils
 from lexicon import lexicon
-from states.states import FSMEditItemsList, FSMEditStoreList, FSMEditMatrix
-from keyboards.keyboards import cancel_kb, create_list_kb_markup, create_list_keyboard, edit_item_list_kb_markup
+from states.states import FSMEditItemsList, FSMEditStoreList, FSMEditMatrix, FSMShowItems
+from keyboards.keyboards import create_list_kb_markup, create_list_keyboard, chs_show_mtd_kb_markup
 
 from typing import Any
 
@@ -78,14 +78,33 @@ async def process_edit_mtrx_command(message: Message, state: FSMContext):
     elif not user_data['stores']:
         await message.answer(text=LEXICON['fill_store_list'])
     else:
-        if not user_data['matrix']:
-            user_data['matrix'].update(utils.get_default_matrix(user_data))
+        # if not user_data['matrix']:
+        #     user_data['matrix'].update(utils.get_default_matrix(user_data))
         await message.answer(
             text=LEXICON['chs_store'],
             reply_markup=create_list_keyboard(user_data['stores'])
         )
         await state.set_state(FSMEditMatrix.wait_for_store_chs)
         await state.set_data(user_data)
+
+
+@router.message(Command(commands='show_store'), StateFilter(default_state))
+async def process_show_store_command(message: Message, state: FSMContext):
+    """This handler processes 'show_store' command"""
+    uid = message.from_user.id
+    user_data: dict[str, Any] = utils.get_user_data(uid)
+    if not user_data['matrix']:
+        await message.answer(text=LEXICON['empty_matrix'])
+    elif utils.is_empty_prices(user_data['matrix']):
+        await message.answer(text=LEXICON['empty_prices'])
+    else:
+        await message.answer(
+            text=LEXICON['show_method'],
+            reply_markup=chs_show_mtd_kb_markup
+        )
+        await state.set_state(FSMShowItems.wait_for_method_chs)
+        await state.set_data(user_data)
+
 
 
 # @router.message(F.text == LEXICON_BTN['cancel'])

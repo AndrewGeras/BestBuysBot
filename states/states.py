@@ -29,3 +29,8 @@ class FSMEditMatrix(StatesGroup):
     wait_for_store_chs = State()
     wait_for_item_chs = State()
     wait_for_price_input = State()
+
+
+class FSMShowItems(StatesGroup):
+    wait_for_method_chs = State()
+    wait_for_store_chs = State()

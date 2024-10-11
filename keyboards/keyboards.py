@@ -4,8 +4,8 @@ from aiogram.types import (InlineKeyboardButton,InlineKeyboardMarkup,
 from lexicon.lexicon import LEXICON_BTN as btns, LEXICON_COMMANDS as cmds, LEXICON
 
 # 'cancel' button
-cancel_btn = KeyboardButton(text=btns['cancel'])
-cancel_kb = ReplyKeyboardMarkup(keyboard=[[cancel_btn]], resize_keyboard=True)
+# cancel_btn = KeyboardButton(text=btns['cancel'])
+# cancel_kb = ReplyKeyboardMarkup(keyboard=[[cancel_btn]], resize_keyboard=True)
 
 
 # 'stop' button
@@ -42,6 +42,24 @@ fin_edit_btn = InlineKeyboardButton(
 )
 edit_item_list_kb_markup = InlineKeyboardMarkup(
     inline_keyboard=[[add_item_btn, del_item_btn], [fin_edit_btn]]
+)
+
+
+#create 'choose show method' keyboard
+show_list_btn = InlineKeyboardButton(
+    text=btns['show_list'],
+    callback_data='show_list'
+)
+chs_store_btn = InlineKeyboardButton(
+    text=btns['chs_store'],
+    callback_data='chs_store'
+)
+cancel_btn = InlineKeyboardButton(
+    text=btns['cancel'],
+    callback_data='cancel'
+)
+chs_show_mtd_kb_markup = InlineKeyboardMarkup(
+    inline_keyboard=[[show_list_btn], [chs_store_btn], [cancel_btn]]
 )
 
 
