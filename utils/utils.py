@@ -34,8 +34,13 @@ def get_user_data(uid: int, path: str=db_path) -> dict:
 
 
 def update_items(user_data: dict[str, Any]) -> dict[str, Any]:
+
     items = user_data['items']
     matrix = user_data['matrix']
+
+    if not matrix:
+        return user_data
+
     m_items = tuple(matrix.values())[0].keys()
 
     if set(items) == set(m_items):
