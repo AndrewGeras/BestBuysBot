@@ -105,14 +105,29 @@ def is_empty_prices(matrix):
     return not any(chain.from_iterable(_.values() for _ in matrix.values()))
 
 
-def get_best_price(user_data: dict[str, Any]):
+def get_best_price(user_data: dict[str, Any]) -> list[dict[str, Any]]:
+    """gathers info about best price for items in stores"""
+
     items = user_data['items']
     matrix = user_data['matrix']
 
+    best_price = {item: min(i[item] for i in matrix.values()) for item in items}
+
+    return [{
+        'name': item,
+        'store': tuple(filter(lambda x: matrix[x][item] == best_price[item], matrix)),
+        'price': best_price[item]
+    } for item in best_price]
 
 
-    return '\n'.join(user_data['items'])
+def get_list_stores(user_data: dict[str, Any]) -> str:
+    list_stores = get_best_price(user_data)
+
+    return "\n".join(f'{item["name"]} лучше купить в {" или ".join(item["store"])} по цене {item["price"]}'
+                     for item in list_stores)
 
 
-def get_best_in_store(user_data: dict[str, Any]) -> str:
-    return '\n'.join(user_data['items'])
+def get_best_in_store(user_data: dict[str, Any], store: str) -> str:
+    list_items = [item for item in get_best_price(user_data) if store in tuple(item['store'])]
+
+    return '\n'.join(f'{item["name"]} >> {item["price"]}' for item in list_items)
