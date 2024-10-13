@@ -1,17 +1,16 @@
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
-from aiogram.filters import StateFilter, Command
+from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from typing import Any
 
-from aiohttp.web_routedef import route
-
 from lexicon.lexicon import LEXICON_BTN, LEXICON
 from states.states import FSMShowItems as FSMstate
-from lexicon import lexicon
 from keyboards.keyboards import create_list_keyboard, chs_show_mtd_kb_markup
 from utils import utils
 
+
+"""These handlers process display results"""
 
 router = Router()
 
@@ -53,7 +52,8 @@ async def process_store_chs_callback(callback: CallbackQuery, state: FSMContext)
     user_data = await state.get_data()
     store = callback.data
     await callback.message.edit_text(
-        text=f'<b>В магазине {store} {LEXICON['list_best_in_store']}</b>' + utils.get_best_in_store(user_data, store)
+        text=f'В магазине <b>{store}</b> {LEXICON['list_best_in_store']}'
+             f'{utils.get_best_in_store(user_data, store)}'
     )
     await state.clear()
 

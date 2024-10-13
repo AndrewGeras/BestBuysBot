@@ -1,15 +1,16 @@
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
-from aiogram.filters import StateFilter, Command
+from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from typing import Any
 
 from lexicon.lexicon import LEXICON_BTN, LEXICON
 from states.states import FSMEditMatrix as FSMstate
-from lexicon import lexicon
 from keyboards import keyboards
 from utils import utils
 
+
+"""These handlers process everything about store-item matrix"""
 
 router = Router()
 
@@ -49,7 +50,7 @@ async def process_chs_store(callback: CallbackQuery, state: FSMContext):
 
 @router.callback_query(StateFilter(FSMstate.wait_for_item_chs))
 async def process_chs_item(callback: CallbackQuery, state: FSMContext):
-    item = callback.data.split(' >> ')[0]
+    item = callback.data.split(f" {LEXICON['div']} ")[0]
     await callback.message.edit_text(text=LEXICON['send_price'])
     await state.update_data(data={'temp_item': item})
     await state.set_state(FSMstate.wait_for_price_input)

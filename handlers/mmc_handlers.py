@@ -12,10 +12,9 @@ from keyboards.keyboards import create_list_kb_markup, create_list_keyboard, chs
 
 from typing import Any
 
-from pprint import pprint
 
+"""These handlers process main menu commands"""
 
-"""Here are collected main menu commands handlers"""
 
 router = Router()
 
@@ -104,15 +103,6 @@ async def process_show_store_command(message: Message, state: FSMContext):
         )
         await state.set_state(FSMShowItems.wait_for_method_chs)
         await state.set_data(user_data)
-
-
-
-# @router.message(F.text == LEXICON_BTN['cancel'])
-# async def procces_cancel_btn_press(message: Message, state: FSMContext):
-#     """this handler processes pressing cancel-button during any none default state"""
-#     await message.answer(text='Вы вернулись в стартовый режим')
-#     await state.clear()
-#     await message.delete()
 
 
 @router.message(StateFilter(default_state), ~F.text_in_(LEXICON_COMMANDS))

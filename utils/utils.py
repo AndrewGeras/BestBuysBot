@@ -92,7 +92,7 @@ def save_user_data(uid: int, user_data: dict[str, Any] | list[str], path: str=db
 
 def get_item_list(items):
     return "\n".join(
-        f"<b><i>{n}. {item}</i></b>" for n, item in enumerate(items, 1)) if items else "<b>Список пока пуст</b>"
+        f"<b>{n}. {item}</b>" for n, item in enumerate(items, 1)) if items else "<b>Список пока пуст</b>"
 
 
 def get_default_matrix(user_data: dict):
@@ -123,11 +123,14 @@ def get_best_price(user_data: dict[str, Any]) -> list[dict[str, Any]]:
 def get_list_stores(user_data: dict[str, Any]) -> str:
     list_stores = get_best_price(user_data)
 
-    return "\n".join(f'{item["name"]} лучше купить в {" или ".join(item["store"])} по цене {item["price"]}'
-                     for item in list_stores)
+    return "\n\n".join(f'<b>{n}. {item["name"]}:</b>\n\t\t\t\t'
+                     f'лучшая цена <b>{item["price"]}</b> в магазине: <b>{" или ".join(item["store"])}</b>'
+                     for n, item in enumerate(list_stores, 1))
 
 
 def get_best_in_store(user_data: dict[str, Any], store: str) -> str:
     list_items = [item for item in get_best_price(user_data) if store in tuple(item['store'])]
-
-    return '\n'.join(f'{item["name"]} >> {item["price"]}' for item in list_items)
+    if list_items:
+        return '\n\n'.join(f'<b>{item["name"]}:</b>\n\t\t\t\tцена: <b>{item["price"]}</b>'
+                           for item in list_items)
+    return '⚠️не советую, здесь всё дороже⚠️'

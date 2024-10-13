@@ -1,18 +1,16 @@
-from contextlib import AsyncContextDecorator
-
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
-from aiogram.filters import StateFilter, Command
+from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from typing import Any
 
-# from keyboards.keyboards import cancel_kb
 from lexicon.lexicon import LEXICON_BTN, LEXICON
 from states.states import FSMEditStoreList as FSMstate
-from lexicon import lexicon
 from keyboards import keyboards
 from utils import utils
 
+
+"""These handlers process everything about store list"""
 
 router = Router()
 
@@ -55,7 +53,6 @@ async def process_choose_del_item(callback: CallbackQuery, state: FSMContext):
         await callback.message.edit_text(text=LEXICON['empty_list'],
                                          reply_markup=keyboards.yes_no_kb_markup)
         await state.set_state(FSMstate.waiting_for_choice)
-
 
 
 @router.message(StateFilter(FSMstate.input_item), F.text)
