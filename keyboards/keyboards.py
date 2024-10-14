@@ -85,7 +85,7 @@ def create_list_keyboard(items: list[str]) -> InlineKeyboardMarkup:
     if isinstance(items, list):
         inline = [[InlineKeyboardButton(text=item, callback_data=item)] for item in items]
     if isinstance(items, dict):
-        inline = [[InlineKeyboardButton(text=f"{item} {LEXICON['div']} {price if price else 'н/д'}",
+        inline = [[InlineKeyboardButton(text=f"{item} {LEXICON['div']} {price if price else LEXICON['empty']}",
                                         callback_data=item)]
                   for item, price in items.items()]
     inline.append([InlineKeyboardButton(text=btns['cancel'], callback_data='cancel')])
