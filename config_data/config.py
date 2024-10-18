@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from pymongo import MongoClient
 from environs import Env
 
 
@@ -9,15 +8,22 @@ class TgBot:
 
 
 @dataclass
+class DBase:
+    host: str
+    db_name: str
+    collection: str
+
+
+@dataclass
 class Config:
     tg_bot: TgBot
-    db_client: MongoClient
-    db_name: str
+    d_base: DBase
 
 
 def load_config(path: str | None = None) -> Config:
     env = Env()
     env.read_env(path)
     return Config(tg_bot=TgBot(token=env('BOT_TOKEN')),
-                  db_client=MongoClient(host=env('DB_HOST')),
-                  db_name=env('DB_NAME'))
+                  d_base=DBase(host=env('DB_HOST'),
+                               db_name=env('DB_NAME'),
+                               collection=env('DB_COLLECTION')))

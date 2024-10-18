@@ -7,7 +7,7 @@ from typing import Any
 from lexicon.lexicon import LEXICON_BTN, LEXICON
 from states.states import FSMEditMatrix as FSMstate
 from keyboards import keyboards
-from utils import utils
+from utils import utils, db_utils
 
 
 """These handlers process everything about store-item matrix"""
@@ -19,7 +19,8 @@ router = Router()
 async def process_cancel_store_chs(callback: CallbackQuery, state: FSMContext):
     uid = callback.from_user.id
     user_data = await state.get_data()
-    utils.save_user_data(uid, user_data)
+    # utils.save_user_data(uid, user_data)
+    db_utils.save_user_data(uid, user_data)
     await callback.message.delete()
     await state.clear()
 

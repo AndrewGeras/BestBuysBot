@@ -7,7 +7,7 @@ from typing import Any
 from lexicon.lexicon import LEXICON_BTN, LEXICON
 from states.states import FSMEditStoreList as FSMstate
 from keyboards import keyboards
-from utils import utils
+from utils import utils, db_utils
 
 
 """These handlers process everything about store list"""
@@ -30,7 +30,8 @@ async def process_cancel_callback(callback: CallbackQuery, state: FSMContext):
     uid = callback.from_user.id
     user_data = await state.get_data()
     user_data = utils.update_stores(user_data)
-    utils.save_user_data(uid, user_data)
+    # utils.save_user_data(uid, user_data)
+    db_utils.save_user_data(uid, user_data)
     await state.clear()
     await callback.message.delete()
 

@@ -2,9 +2,8 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
-from typing import Any
 
-from lexicon.lexicon import LEXICON_BTN, LEXICON
+from lexicon.lexicon import LEXICON
 from states.states import FSMShowItems as FSMstate
 from keyboards.keyboards import create_list_keyboard, chs_show_mtd_kb_markup
 from utils import utils

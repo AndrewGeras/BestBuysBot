@@ -5,7 +5,7 @@ from aiogram.fsm.state import default_state
 from aiogram.fsm.context import FSMContext
 
 from lexicon.lexicon import LEXICON_COMMANDS, LEXICON_BTN, LEXICON
-from utils import utils
+from utils import utils, db_utils
 from lexicon import lexicon
 from states.states import FSMEditItemsList, FSMEditStoreList, FSMEditMatrix, FSMShowItems
 from keyboards.keyboards import create_list_kb_markup, create_list_keyboard, chs_show_mtd_kb_markup
@@ -31,7 +31,7 @@ async def process_start_command(message: Message):
     """this handler processes 'start'-command"""
     user_name = message.from_user.first_name
     uid = message.from_user.id
-    utils.get_user_data(uid)
+    # utils.get_user_data(uid)
     await message.answer(text=utils.greating(user_name))
 
 
@@ -45,7 +45,8 @@ async def process_help_command(message: Message):
 async def process_eil_command(message: Message, state: FSMContext):
     """this handler processes 'edit item list'-command"""
     uid = message.from_user.id
-    user_data = utils.get_user_data(uid)
+    # user_data = utils.get_user_data(uid)
+    user_data = db_utils.get_user_data(uid)
     await state.set_data(user_data)
 
     await message.answer(
@@ -58,7 +59,8 @@ async def process_eil_command(message: Message, state: FSMContext):
 async def process_esl_command(message: Message, state: FSMContext):
     """this handler processes 'edit store list'-command"""
     uid = message.from_user.id
-    user_data: dict[str, Any] = utils.get_user_data(uid)
+    # user_data: dict[str, Any] = utils.get_user_data(uid)
+    user_data: dict[str, Any] = db_utils.get_user_data(uid)
 
     await state.set_data(user_data)
     await message.answer(
@@ -71,7 +73,8 @@ async def process_esl_command(message: Message, state: FSMContext):
 async def process_edit_mtrx_command(message: Message, state: FSMContext):
     """This handler processes 'edit matrix'-command"""
     uid = message.from_user.id
-    user_data: dict[str, Any] = utils.get_user_data(uid)
+    # user_data: dict[str, Any] = utils.get_user_data(uid)
+    user_data: dict[str, Any] = db_utils.get_user_data(uid)
     if not user_data['items']:
         await message.answer(text=LEXICON['fill_item_list'])
     elif not user_data['stores']:
@@ -91,7 +94,8 @@ async def process_edit_mtrx_command(message: Message, state: FSMContext):
 async def process_show_store_command(message: Message, state: FSMContext):
     """This handler processes 'show_store' command"""
     uid = message.from_user.id
-    user_data: dict[str, Any] = utils.get_user_data(uid)
+    # user_data: dict[str, Any] = utils.get_user_data(uid)
+    user_data: dict[str, Any] = db_utils.get_user_data(uid)
     if not user_data['matrix']:
         await message.answer(text=LEXICON['empty_matrix'])
     elif utils.is_empty_prices(user_data['matrix']):

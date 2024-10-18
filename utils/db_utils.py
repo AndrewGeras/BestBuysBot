@@ -1,10 +1,9 @@
 from config_data.config import Config, load_config
+from pymongo import MongoClient
 from typing import Any
 
 
 config: Config = load_config()
-
-client = config.db_client
 
 
 def get_user_data(uid: int):
@@ -13,10 +12,11 @@ def get_user_data(uid: int):
         'stores': [],
         'matrix': {}
     }
+    client = MongoClient(host=config.d_base.host)
     try:
-        database = client[config.db_name]
-        collections = database['users']
-        user_data = collections.find_one({"_id": uid})  #['user_data']
+        database = client[config.d_base.db_name]
+        collections = database[config.d_base.collection]
+        user_data = collections.find_one({"_id": uid})
         if user_data is None:
             collections.insert_one({"_id": uid, 'user_data': default_data})
             client.close()
@@ -28,10 +28,13 @@ def get_user_data(uid: int):
         print(ex)
 
 
-def set_user_data(uid: int, user_data: dict[str, Any]):
+def save_user_data(uid: int, user_data: dict[str, Any]):
+
+    client = MongoClient(host=config.d_base.host)
+
     try:
-        database = client[config.db_name]
-        collections = database['users']
+        database = client[config.d_base.db_name]
+        collections = database[config.d_base.collection]
         query_filter = {"_id": uid}
         update_data = {'$set': {'user_data': user_data}}
         collections.update_one(query_filter, update_data, upsert=True)
@@ -39,16 +42,3 @@ def set_user_data(uid: int, user_data: dict[str, Any]):
 
     except Exception as ex:
         print(ex)
-
-
-#
-# user_data = {
-#         'items': [],
-#         'stores': [],
-#         'matrix': {}
-#     }
-#
-# set_user_data(456, user_data)
-
-
-
