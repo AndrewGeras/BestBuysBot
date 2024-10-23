@@ -19,8 +19,8 @@ router = Router()
 async def process_stop_adding(message: Message, state: FSMContext):
     user_data = await state.get_data()
     await message.answer(
-        text=f"{LEXICON['chg_items']}\n\n{utils.get_item_list(user_data['stores'])}",
-        reply_markup=keyboards.edit_item_list_kb_markup)
+        text=f"{LEXICON['chg_stores']}\n\n{utils.get_item_list(user_data['stores'])}",
+        reply_markup=keyboards.create_list_kb_markup('store'))
     await state.set_state(FSMstate.waiting_for_choice)
     await message.delete()
 
@@ -30,7 +30,6 @@ async def process_cancel_callback(callback: CallbackQuery, state: FSMContext, db
     uid = callback.from_user.id
     user_data = await state.get_data()
     user_data = utils.update_stores(user_data)
-    # utils.save_user_data(uid, user_data)
     db_utils.save_user_data(uid, user_data, db_conf_data)
     await state.clear()
     await callback.message.delete()
@@ -76,10 +75,9 @@ async def process_input_item(message: Message, state: FSMContext):
 async def process_cancel_delete(callback: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     await state.set_state(FSMstate.waiting_for_choice)
-    await callback.message.answer(
+    await callback.message.edit_text(
         text=f"{LEXICON['chg_stores']}\n\n{utils.get_item_list(user_data['stores'])}",
-        reply_markup=keyboards.edit_item_list_kb_markup)
-    await callback.message.delete()
+        reply_markup=keyboards.create_list_kb_markup('store'))
 
 
 @router.callback_query(StateFilter(FSMstate.delete_item))
@@ -90,7 +88,7 @@ async def process_item_delete(callback: CallbackQuery, state: FSMContext):
     await state.set_data(user_data)
     await callback.message.edit_text(text=f'<b>{item}</b> {LEXICON["cross_out"]}\n\n'
                                           f"{LEXICON['chg_stores']}\n\n{utils.get_item_list(user_data['stores'])}",
-                                     reply_markup=keyboards.edit_item_list_kb_markup)
+                                     reply_markup=keyboards.create_list_kb_markup('store'))
     await state.set_state(FSMstate.waiting_for_choice)
 
 

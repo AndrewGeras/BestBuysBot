@@ -31,7 +31,6 @@ async def process_start_command(message: Message):
     """this handler processes 'start'-command"""
     user_name = message.from_user.first_name
     uid = message.from_user.id
-    # utils.get_user_data(uid)
     await message.answer(text=utils.greating(user_name))
 
 
@@ -45,7 +44,6 @@ async def process_help_command(message: Message):
 async def process_eil_command(message: Message, state: FSMContext, db_conf_data):
     """this handler processes 'edit item list'-command"""
     uid = message.from_user.id
-    # user_data = utils.get_user_data(uid)
     user_data = db_utils.get_user_data(uid, db_conf_data)
     await state.set_data(user_data)
 
@@ -59,12 +57,11 @@ async def process_eil_command(message: Message, state: FSMContext, db_conf_data)
 async def process_esl_command(message: Message, state: FSMContext, db_conf_data):
     """this handler processes 'edit store list'-command"""
     uid = message.from_user.id
-    # user_data: dict[str, Any] = utils.get_user_data(uid)
     user_data: dict[str, Any] = db_utils.get_user_data(uid, db_conf_data)
 
     await state.set_data(user_data)
     await message.answer(
-        text=f"{LEXICON['chg_items']}\n\n{utils.get_item_list(user_data['stores'])}",
+        text=f"{LEXICON['chg_stores']}\n\n{utils.get_item_list(user_data['stores'])}",
         reply_markup=create_list_kb_markup('store'))
     await state.set_state(FSMEditStoreList.waiting_for_choice)
 
@@ -73,15 +70,12 @@ async def process_esl_command(message: Message, state: FSMContext, db_conf_data)
 async def process_edit_mtrx_command(message: Message, state: FSMContext, db_conf_data):
     """This handler processes 'edit matrix'-command"""
     uid = message.from_user.id
-    # user_data: dict[str, Any] = utils.get_user_data(uid)
     user_data: dict[str, Any] = db_utils.get_user_data(uid, db_conf_data)
     if not user_data['items']:
         await message.answer(text=LEXICON['fill_item_list'])
     elif not user_data['stores']:
         await message.answer(text=LEXICON['fill_store_list'])
     else:
-        # if not user_data['matrix']:
-        #     user_data['matrix'].update(utils.get_default_matrix(user_data))
         await message.answer(
             text=LEXICON['chs_store'],
             reply_markup=create_list_keyboard(user_data['stores'])
@@ -94,7 +88,6 @@ async def process_edit_mtrx_command(message: Message, state: FSMContext, db_conf
 async def process_show_store_command(message: Message, state: FSMContext, db_conf_data):
     """This handler processes 'show_store' command"""
     uid = message.from_user.id
-    # user_data: dict[str, Any] = utils.get_user_data(uid)
     user_data: dict[str, Any] = db_utils.get_user_data(uid, db_conf_data)
     if not user_data['matrix']:
         await message.answer(text=LEXICON['empty_matrix'])
