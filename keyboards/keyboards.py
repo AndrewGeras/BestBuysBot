@@ -28,21 +28,21 @@ yes_no_kb_markup = InlineKeyboardMarkup(
 
 
 # create 'edit item list' keyboard
-add_item_btn = InlineKeyboardButton(
-    text=btns['add_item'],
-    callback_data='add_item'
-)
-del_item_btn = InlineKeyboardButton(
-    text=btns['del_item'],
-    callback_data='del_item'
-)
-fin_edit_btn = InlineKeyboardButton(
-    text=btns['stop'],
-    callback_data='stop'
-)
-edit_item_list_kb_markup = InlineKeyboardMarkup(
-    inline_keyboard=[[add_item_btn, del_item_btn], [fin_edit_btn]]
-)
+# add_item_btn = InlineKeyboardButton(
+#     text=btns['add_item'],
+#     callback_data='add_item'
+# )
+# del_item_btn = InlineKeyboardButton(
+#     text=btns['del_item'],
+#     callback_data='del_item'
+# )
+# fin_edit_btn = InlineKeyboardButton(
+#     text=btns['stop'],
+#     callback_data='stop'
+# )
+# edit_item_list_kb_markup = InlineKeyboardMarkup(
+#     inline_keyboard=[[add_item_btn, del_item_btn], [fin_edit_btn]]
+# )
 
 
 #create 'choose show method' keyboard

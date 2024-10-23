@@ -14,15 +14,17 @@ class FSMAbstract(StatesGroup):
 class FSMEditItemsList(StatesGroup):
     waiting_for_choice = State()
     input_item = State()
-    change_list = State()
+    change_item = State()
     delete_item = State()
+    delete_confirm = State()
 
 
 class FSMEditStoreList(StatesGroup):
     waiting_for_choice = State()
     input_item = State()
-    change_list = State()
+    change_item = State()
     delete_item = State()
+    delete_confirm = State()
 
 
 class FSMEditMatrix(StatesGroup):

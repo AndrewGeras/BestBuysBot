@@ -82,17 +82,40 @@ async def process_cancel_delete(callback: CallbackQuery, state: FSMContext):
 
 @router.callback_query(StateFilter(FSMstate.delete_item))
 async def process_item_delete(callback: CallbackQuery, state: FSMContext):
+    store = callback.data
+    await state.update_data(data={'temp_store': store})
+    await callback.message.edit_text(text=f'{LEXICON['del_store_confirm']} <b>{store}</b>?',
+                                     reply_markup=keyboards.yes_no_kb_markup)
+    await state.set_state(FSMstate.delete_confirm)
+
+
+@router.callback_query(StateFilter(FSMstate.delete_confirm), F.data == 'no')
+async def process_reject_delete_store(callback: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
-    item = callback.data
-    user_data['stores'].remove(item)
+    item_list = user_data['stores']
+    user_data.pop('temp_store', None)
     await state.set_data(user_data)
-    await callback.message.edit_text(text=f'<b>{item}</b> {LEXICON["cross_out"]}\n\n'
+    await callback.message.edit_text(text=LEXICON['choice_item'],
+                                     reply_markup=keyboards.create_list_keyboard(item_list))
+    await state.set_state(FSMstate.delete_item)
+
+
+@router.callback_query(StateFilter(FSMstate.delete_confirm), F.data == 'yes')
+async def process_confirm_delete_store(callback: CallbackQuery, state: FSMContext):
+    user_data = await state.get_data()
+    store = user_data.pop('temp_store', None)
+    if store:
+        user_data['stores'].remove(store)
+    await callback.message.edit_text(text=f'<b>{store}</b> {LEXICON["cross_out"]}\n\n'
                                           f"{LEXICON['chg_stores']}\n\n{utils.get_item_list(user_data['stores'])}",
                                      reply_markup=keyboards.create_list_kb_markup('store'))
+    await state.set_data(user_data)
     await state.set_state(FSMstate.waiting_for_choice)
 
 
-@router.message(StateFilter(FSMstate.delete_item, FSMstate.waiting_for_choice))
+@router.message(StateFilter(FSMstate.delete_item,
+                            FSMstate.waiting_for_choice,
+                            FSMstate.delete_confirm))
 async def process_idler_update(message: Message):
     """this handler processes any not command update sent in default state"""
     await message.delete()
