@@ -9,7 +9,7 @@ class TgBot:
 
 @dataclass
 class DBase:
-    host: str
+    db_host: str
     db_name: str
     collection: str
 
@@ -24,6 +24,6 @@ def load_config(path: str | None = None) -> Config:
     env = Env()
     env.read_env(path)
     return Config(tg_bot=TgBot(token=env('BOT_TOKEN')),
-                  d_base=DBase(host=env('DB_HOST'),
+                  d_base=DBase(db_host=env('DB_HOST'),
                                db_name=env('DB_NAME'),
                                collection=env('DB_COLLECTION')))

@@ -14,6 +14,10 @@ async def main():
     config: Config = load_config()
     bot = Bot(token=config.tg_bot.token, default=DefaultBotProperties(parse_mode='HTML'))
     dp = Dispatcher(storage=storage)
+    db_conf_data = {'db_host': config.d_base.db_host,
+                      'db_name': config.d_base.db_name,
+                      'collection': config.d_base.collection}
+    dp.workflow_data.update({"db_conf_data": db_conf_data})
 
     await set_main_menu(bot)
 

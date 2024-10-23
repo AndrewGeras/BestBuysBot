@@ -26,12 +26,12 @@ async def process_stop_adding(message: Message, state: FSMContext):
 
 
 @router.callback_query(StateFilter(FSMstate.waiting_for_choice), F.data.in_(('stop', 'no')))
-async def process_cancel_callback(callback: CallbackQuery, state: FSMContext):
+async def process_cancel_callback(callback: CallbackQuery, state: FSMContext, db_conf_data):
     uid = callback.from_user.id
     user_data = await state.get_data()
     user_data = utils.update_stores(user_data)
     # utils.save_user_data(uid, user_data)
-    db_utils.save_user_data(uid, user_data)
+    db_utils.save_user_data(uid, user_data, db_conf_data)
     await state.clear()
     await callback.message.delete()
 

@@ -3,22 +3,23 @@ from pymongo import MongoClient
 from typing import Any
 
 
-config: Config = load_config()
+# config: Config = load_config()
 
 
-def get_user_data(uid: int):
+def get_user_data(uid: int, conf_data: dict[str, str]):
     default_data = {
         'items': [],
         'stores': [],
         'matrix': {}
     }
-    client = MongoClient(host=config.d_base.host)
+    client = MongoClient(host=conf_data['db_host'])
+
     try:
-        database = client[config.d_base.db_name]
-        collections = database[config.d_base.collection]
-        user_data = collections.find_one({"_id": uid})
+        database = client[conf_data['db_name']]
+        collection = database[conf_data['collection']]
+        user_data = collection.find_one({"_id": uid})
         if user_data is None:
-            collections.insert_one({"_id": uid, 'user_data': default_data})
+            collection.insert_one({"_id": uid, 'user_data': default_data})
             client.close()
             return default_data
         client.close()
@@ -28,16 +29,16 @@ def get_user_data(uid: int):
         print(ex)
 
 
-def save_user_data(uid: int, user_data: dict[str, Any]):
+def save_user_data(uid: int, user_data: dict[str, Any], conf_data: dict[str, str]):
 
-    client = MongoClient(host=config.d_base.host)
+    client = MongoClient(host=conf_data['db_host'])
 
     try:
-        database = client[config.d_base.db_name]
-        collections = database[config.d_base.collection]
+        database = client[conf_data['db_name']]
+        collection = database[conf_data['collection']]
         query_filter = {"_id": uid}
         update_data = {'$set': {'user_data': user_data}}
-        collections.update_one(query_filter, update_data, upsert=True)
+        collection.update_one(query_filter, update_data, upsert=True)
         client.close()
 
     except Exception as ex:

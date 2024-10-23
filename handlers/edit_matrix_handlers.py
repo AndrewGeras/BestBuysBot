@@ -16,11 +16,11 @@ router = Router()
 
 
 @router.callback_query(StateFilter(FSMstate.wait_for_store_chs), F.data == 'cancel')
-async def process_cancel_store_chs(callback: CallbackQuery, state: FSMContext):
+async def process_cancel_store_chs(callback: CallbackQuery, state: FSMContext, db_conf_data):
     uid = callback.from_user.id
     user_data = await state.get_data()
     # utils.save_user_data(uid, user_data)
-    db_utils.save_user_data(uid, user_data)
+    db_utils.save_user_data(uid, user_data, db_conf_data)
     await callback.message.delete()
     await state.clear()
 
