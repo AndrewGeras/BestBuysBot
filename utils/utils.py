@@ -131,6 +131,8 @@ def get_list_stores(user_data: dict[str, Any]) -> str:
 
 
 def get_best_in_store(user_data: dict[str, Any], store: str) -> str:
+    if all(price is None for price in user_data['matrix'][store].values()):
+        return LEXICON['empty_prices_in_store']
     list_items = [item for item in get_best_price(user_data)
                   if store in tuple(item['store'])
                   and item["price"] is not None]
