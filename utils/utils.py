@@ -54,13 +54,38 @@ def update_stores(user_data: dict[str, Any]) -> dict[str, Any]:
     return user_data
 
 
-def change_store(user_data: dict[str, Any], old: str, new: str) -> dict[str, Any]:
-    matrix: dict = user_data.get('matrix')
-    if matrix is None or matrix.get(old) is None:
+# def change_store(user_data: dict[str, Any], old: str, new: str) -> dict[str, Any]:
+#     matrix: dict = user_data.get('matrix')
+#     if matrix is None or matrix.get(old) is None:
+#         return user_data
+#     matrix[new] = matrix.pop(old)
+#     user_data['matrix'] = matrix
+#     return user_data
+
+def change_user_data(user_data: dict[str, Any], old: str, new: str, key: str) -> dict[str, Any] | None:
+    collection = user_data[key]
+    matrix: dict = user_data['matrix']
+    if new in collection:
+        return None
+    user_data[key] = [item if item != old else new for item in collection]
+
+    user_data.pop('temp', None)
+
+    if key == 'stores':
+        if not matrix or matrix.get(old) is None:
+            return user_data
+        matrix[new] = matrix.pop(old, None)
+        user_data['matrix'] = matrix
         return user_data
-    matrix[new] = matrix.pop(old)
-    user_data['matrix'] = matrix
-    return user_data
+
+    elif key == 'items':
+        pass
+
+    # if matrix and matrix.get(old):
+    #     return user_data
+
+
+
 
 
 def get_user_data(uid: int, path: str=db_path) -> dict:

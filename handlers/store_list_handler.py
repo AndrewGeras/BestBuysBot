@@ -79,22 +79,18 @@ async def process_input_item(message: Message, state: FSMContext):
 @router.message(StateFilter(FSMstate.change_store), F.text)
 async def process_change_store(message: Message, state: FSMContext):
     user_data: dict[str, Any] = await state.get_data()
-    stores: list = user_data['stores']
     store = message.text[:30]
-    if store in stores:
+    old_store = user_data.get('temp')
+
+    changed_data = utils.change_user_data(user_data, old_store, store, 'stores')
+
+    if changed_data is None:
         await message.answer(text=f'<b>{store}</b> {LEXICON["in_list"]}',
                              reply_markup=keyboards.stop_kb)
     else:
-        old_store = user_data.pop('temp', None)
-        if old_store:
-            i = stores.index(old_store)
-            stores.pop(i)
-            stores.insert(i, store)
-            user_data = utils.change_store(user_data, old_store, store)
-            user_data['stores'] = stores
-        await state.set_data(user_data)
+        await state.set_data(changed_data)
         await message.answer(
-            text=f"{LEXICON['chg_stores']}\n\n{utils.get_item_list(user_data['stores'])}",
+            text=f"{LEXICON['chg_stores']}\n\n{utils.get_item_list(changed_data['stores'])}",
             reply_markup=keyboards.create_list_kb_markup('store'))
         await state.set_state(FSMstate.waiting_for_choice)
 
