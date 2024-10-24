@@ -54,6 +54,15 @@ def update_stores(user_data: dict[str, Any]) -> dict[str, Any]:
     return user_data
 
 
+def change_store(user_data: dict[str, Any], old: str, new: str) -> dict[str, Any]:
+    matrix: dict = user_data.get('matrix')
+    if matrix is None or matrix.get(old) is None:
+        return user_data
+    matrix[new] = matrix.pop(old)
+    user_data['matrix'] = matrix
+    return user_data
+
+
 def get_user_data(uid: int, path: str=db_path) -> dict:
 
     default_data = {

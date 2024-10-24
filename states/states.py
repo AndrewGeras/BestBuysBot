@@ -13,16 +13,17 @@ class FSMAbstract(StatesGroup):
 
 class FSMEditItemsList(StatesGroup):
     waiting_for_choice = State()
-    input_item = State()
-    change_item = State()
+    add_item = State()
+    edit_item = State()
     delete_item = State()
     delete_confirm = State()
 
 
 class FSMEditStoreList(StatesGroup):
     waiting_for_choice = State()
-    input_item = State()
-    change_item = State()
+    add_item = State()
+    edit_item = State()
+    change_store = State()
     delete_item = State()
     delete_confirm = State()
 

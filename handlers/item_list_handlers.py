@@ -15,7 +15,7 @@ from utils import utils, db_utils
 router = Router()
 
 
-@router.message(StateFilter(FSMstate.input_item), F.text == LEXICON_BTN['stop'])
+@router.message(StateFilter(FSMstate.add_item), F.text == LEXICON_BTN['stop'])
 async def process_stop_adding(message: Message, state: FSMContext):
     user_data = await state.get_data()
     await message.answer(
@@ -46,7 +46,7 @@ async def process_choose_del_item(callback: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     item_list = user_data['items']
     if item_list:
-        await callback.message.edit_text(text=LEXICON['choice_item'],
+        await callback.message.edit_text(text=LEXICON['del_item'],
                                          reply_markup=keyboards.create_list_keyboard(item_list))
         await state.set_state(FSMstate.delete_item)
     else:
@@ -55,7 +55,7 @@ async def process_choose_del_item(callback: CallbackQuery, state: FSMContext):
         await state.set_state(FSMstate.waiting_for_choice)
 
 
-@router.message(StateFilter(FSMstate.input_item), F.text)
+@router.message(StateFilter(FSMstate.add_item), F.text)
 async def process_input_item(message: Message, state: FSMContext):
     user_data: dict[str, Any] = await state.get_data()
     items = user_data['items']
@@ -95,7 +95,7 @@ async def process_reject_delete_item(callback: CallbackQuery, state: FSMContext)
     item_list = user_data['items']
     user_data.pop('temp_item', None)
     await state.set_data(user_data)
-    await callback.message.edit_text(text=LEXICON['choice_item'],
+    await callback.message.edit_text(text=LEXICON['del_item'],
                                      reply_markup=keyboards.create_list_keyboard(item_list))
     await state.set_state(FSMstate.delete_item)
 

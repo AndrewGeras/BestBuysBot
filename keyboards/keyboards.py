@@ -69,6 +69,10 @@ def create_list_kb_markup(item_type: str) -> InlineKeyboardMarkup:
         text = f'{btns['add_item']} {item}',
         callback_data='add_item'
     )
+    edit_btn = InlineKeyboardButton(
+        text = f'{btns['edit_item']} {item}',
+        callback_data='edit_item'
+    )
     del_btn = InlineKeyboardButton(
         text=f'{btns['del_item']} {item}',
         callback_data='del_item'
@@ -77,7 +81,7 @@ def create_list_kb_markup(item_type: str) -> InlineKeyboardMarkup:
         text=btns['stop'],
         callback_data='stop'
     )
-    return InlineKeyboardMarkup(inline_keyboard=[[add_btn, del_btn], [fin_btn]])
+    return InlineKeyboardMarkup(inline_keyboard=[[add_btn], [edit_btn], [del_btn], [fin_btn]])
 
 
 def create_list_keyboard(items: list[str]) -> InlineKeyboardMarkup:
