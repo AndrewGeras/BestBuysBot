@@ -15,16 +15,17 @@ class FSMEditItemsList(StatesGroup):
     waiting_for_choice = State()
     add_item = State()
     edit_item = State()
+    change_item = State()
     delete_item = State()
     delete_confirm = State()
 
 
 class FSMEditStoreList(StatesGroup):
     waiting_for_choice = State()
-    add_item = State()
-    edit_item = State()
+    add_store = State()
+    edit_store = State()
     change_store = State()
-    delete_item = State()
+    delete_store = State()
     delete_confirm = State()
 
 

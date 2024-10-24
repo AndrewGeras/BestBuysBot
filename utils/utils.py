@@ -75,17 +75,15 @@ def change_user_data(user_data: dict[str, Any], old: str, new: str, key: str) ->
         if not matrix or matrix.get(old) is None:
             return user_data
         matrix[new] = matrix.pop(old, None)
-        user_data['matrix'] = matrix
-        return user_data
 
     elif key == 'items':
-        pass
+        if not matrix or old not in tuple(matrix.values())[0]:
+            return user_data
+        for store in matrix:
+            matrix[store][new] = matrix[store].pop(old, None)
 
-    # if matrix and matrix.get(old):
-    #     return user_data
-
-
-
+    user_data['matrix'] = matrix
+    return user_data
 
 
 def get_user_data(uid: int, path: str=db_path) -> dict:
