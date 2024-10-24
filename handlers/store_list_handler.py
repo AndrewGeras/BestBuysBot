@@ -3,7 +3,6 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from typing import Any
-from pprint import pprint
 
 from lexicon.lexicon import LEXICON_BTN, LEXICON
 from states.states import FSMEditStoreList as FSMstate
@@ -19,6 +18,18 @@ router = Router()
 @router.message(StateFilter(FSMstate.add_store), F.text == LEXICON_BTN['stop'])
 async def process_stop_adding(message: Message, state: FSMContext):
     user_data = await state.get_data()
+    await message.answer(
+        text=f"{LEXICON['chg_stores']}\n\n{utils.get_item_list(user_data['stores'])}",
+        reply_markup=keyboards.create_list_kb_markup('store'))
+    await state.set_state(FSMstate.waiting_for_choice)
+    await message.delete()
+
+
+@router.message(StateFilter(FSMstate.change_store), F.text == LEXICON_BTN['stop'])
+async def process_stop_change(message: Message, state: FSMContext):
+    user_data = await state.get_data()
+    user_data.pop('temp', None)
+    await state.set_data(user_data)
     await message.answer(
         text=f"{LEXICON['chg_stores']}\n\n{utils.get_item_list(user_data['stores'])}",
         reply_markup=keyboards.create_list_kb_markup('store'))

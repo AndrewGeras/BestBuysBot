@@ -25,6 +25,18 @@ async def process_stop_adding(message: Message, state: FSMContext):
     await message.delete()
 
 
+@router.message(StateFilter(FSMstate.change_item), F.text == LEXICON_BTN['stop'])
+async def process_stop_change(message: Message, state: FSMContext):
+    user_data = await state.get_data()
+    user_data.pop('temp', None)
+    await state.set_data(user_data)
+    await message.answer(
+        text=f"{LEXICON['chg_items']}\n\n{utils.get_item_list(user_data['items'])}",
+        reply_markup=keyboards.create_list_kb_markup('item'))
+    await state.set_state(FSMstate.waiting_for_choice)
+    await message.delete()
+
+
 @router.callback_query(StateFilter(FSMstate.waiting_for_choice), F.data.in_(('stop', 'no')))
 async def process_cancel_callback(callback: CallbackQuery, state: FSMContext, db_conf_data):
     uid = callback.from_user.id
