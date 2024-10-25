@@ -8,7 +8,8 @@ from lexicon.lexicon import LEXICON
 db_path = 'db.json'
 
 def greating(user_name: str) -> str:
-    return f'Привет {user_name}! {lexicon.LEXICON["start"]}'
+    return (f'Привет {user_name}!👋🏻'
+            f'\n{lexicon.LEXICON["start"]}')
 
 
 def update_items(user_data: dict[str, Any]) -> dict[str, Any]:
