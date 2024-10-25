@@ -4,7 +4,7 @@ from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from typing import Any
 
-from lexicon.lexicon import LEXICON_BTN, LEXICON
+from lexicon.lexicon import LEXICON_BTN, LEXICON, LEXICON_COMMANDS
 from states.states import FSMEditItemsList as FSMstate
 from keyboards import keyboards
 from utils import utils, db_utils
@@ -71,7 +71,8 @@ async def process_choose_edit_or_del_item(callback: CallbackQuery, state: FSMCon
         await state.set_state(FSMstate.waiting_for_choice)
 
 
-@router.message(StateFilter(FSMstate.add_item), F.text)
+
+@router.message(StateFilter(FSMstate.add_item), F.text & ~F.text.in_(LEXICON_COMMANDS))
 async def process_input_item(message: Message, state: FSMContext):
     user_data: dict[str, Any] = await state.get_data()
     items = user_data['items']
@@ -87,7 +88,7 @@ async def process_input_item(message: Message, state: FSMContext):
         await state.update_data(user_data)
 
 
-@router.message(StateFilter(FSMstate.change_item), F.text)
+@router.message(StateFilter(FSMstate.change_item), F.text & ~F.text.in_(LEXICON_COMMANDS))
 async def process_change_item(message: Message, state: FSMContext):
     user_data: dict[str, Any] = await state.get_data()
     item = message.text[:30]
@@ -158,7 +159,9 @@ async def process_confirm_delete_item(callback: CallbackQuery, state: FSMContext
 
 @router.message(StateFilter(FSMstate.delete_item,
                             FSMstate.waiting_for_choice,
-                            FSMstate.delete_confirm))
+                            FSMstate.delete_confirm,
+                            FSMstate.add_item,
+                            FSMstate.change_item))
 async def process_idler_update(message: Message):
     """this handler processes any not command update sent in default state"""
     await message.delete()
