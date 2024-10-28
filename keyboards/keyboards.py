@@ -3,10 +3,6 @@ from aiogram.types import (InlineKeyboardButton,InlineKeyboardMarkup,
 
 from lexicon.lexicon import LEXICON_BTN as btns, LEXICON_COMMANDS as cmds, LEXICON
 
-# 'cancel' button
-# cancel_btn = KeyboardButton(text=btns['cancel'])
-# cancel_kb = ReplyKeyboardMarkup(keyboard=[[cancel_btn]], resize_keyboard=True)
-
 
 # 'stop' button
 stop_btn = KeyboardButton(text=btns['stop'])
@@ -25,24 +21,6 @@ no_btn = InlineKeyboardButton(
 yes_no_kb_markup = InlineKeyboardMarkup(
     inline_keyboard=[[yes_btn, no_btn]]
 )
-
-
-# create 'edit item list' keyboard
-# add_item_btn = InlineKeyboardButton(
-#     text=btns['add_item'],
-#     callback_data='add_item'
-# )
-# del_item_btn = InlineKeyboardButton(
-#     text=btns['del_item'],
-#     callback_data='del_item'
-# )
-# fin_edit_btn = InlineKeyboardButton(
-#     text=btns['stop'],
-#     callback_data='stop'
-# )
-# edit_item_list_kb_markup = InlineKeyboardMarkup(
-#     inline_keyboard=[[add_item_btn, del_item_btn], [fin_edit_btn]]
-# )
 
 
 #create 'choose show method' keyboard
@@ -84,13 +62,17 @@ def create_list_kb_markup(item_type: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[[add_btn], [edit_btn], [del_btn], [fin_btn]])
 
 
-def create_list_keyboard(items: list[str]) -> InlineKeyboardMarkup:
+def create_list_keyboard(items: list[str] | dict[str, dict], key: str) -> InlineKeyboardMarkup:
     """create list of items or stores as inline keyboard"""
-    if isinstance(items, list):
+    if key in ('items', 'stores'):
         inline = [[InlineKeyboardButton(text=item, callback_data=item)] for item in items]
-    if isinstance(items, dict):
+    elif key == 'matrix':
         inline = [[InlineKeyboardButton(text=f"{item} {LEXICON['div']} {price if price else LEXICON['empty']}",
                                         callback_data=item)]
                   for item, price in items.items()]
+    elif key == 'settings':
+        inline = [[InlineKeyboardButton(text=f"{LEXICON[setting]} {LEXICON['div']} {value}",
+                                        callback_data=setting)]
+                  for setting, value in items.items()]
     inline.append([InlineKeyboardButton(text=btns['cancel'], callback_data='cancel')])
     return InlineKeyboardMarkup(inline_keyboard=inline)

@@ -30,7 +30,7 @@ async def process_cancel_item_chs(callback: CallbackQuery, state: FSMContext):
     user_data.pop('temp', None)
     await callback.message.edit_text(
         text=LEXICON['chs_store'],
-        reply_markup=keyboards.create_list_keyboard(user_data['stores'])
+        reply_markup=keyboards.create_list_keyboard(user_data['stores'], key='matrix')
     )
     await state.set_data(user_data)
     await state.set_state(FSMstate.wait_for_store_chs)
@@ -42,7 +42,7 @@ async def process_chs_store(callback: CallbackQuery, state: FSMContext):
     store = callback.data
     await callback.message.edit_text(
         text=LEXICON['chs_item'],
-        reply_markup=keyboards.create_list_keyboard(user_data['matrix'][store])
+        reply_markup=keyboards.create_list_keyboard(user_data['matrix'][store], key='matrix')
     )
 
     await state.update_data(data={'temp': {'temp_store': store}})
@@ -68,7 +68,7 @@ async def process_price_input_stop(message: Message, state: FSMContext):
     store = temp['temp_store']
     await message.answer(
         text=LEXICON['chs_item'],
-        reply_markup=keyboards.create_list_keyboard(user_data['matrix'][store])
+        reply_markup=keyboards.create_list_keyboard(user_data['matrix'][store], key='matrix')
     )
     await state.update_data(data={'temp': temp})
     await state.set_state(FSMstate.wait_for_item_chs)
@@ -86,7 +86,7 @@ async def process_price_input(message: Message, state: FSMContext):
     user_data.update({'temp': temp})
     await message.answer(
         text=LEXICON['chs_item'],
-        reply_markup=keyboards.create_list_keyboard(user_data['matrix'][store])
+        reply_markup=keyboards.create_list_keyboard(user_data['matrix'][store], key='matrix')
     )
 
     await state.set_data(user_data)

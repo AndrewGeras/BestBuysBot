@@ -7,7 +7,7 @@ from aiogram.fsm.context import FSMContext
 from lexicon.lexicon import LEXICON_COMMANDS, LEXICON_BTN, LEXICON
 from utils import utils, db_utils
 from lexicon import lexicon
-from states.states import FSMEditItemsList, FSMEditStoreList, FSMEditMatrix, FSMShowItems
+from states.states import FSMEditItemsList, FSMEditStoreList, FSMEditMatrix, FSMShowItems, FSMSettings
 from keyboards.keyboards import create_list_kb_markup, create_list_keyboard, chs_show_mtd_kb_markup
 
 from typing import Any
@@ -21,7 +21,7 @@ router = Router()
 
 @router.message(Command(commands='az5'))
 async def process_hard_reset_command(message: Message, state: FSMContext):
-    """this temper handler for hard-reset"""
+    """this temp handler is for hard-reset"""
     await message.answer(text="бот в исходном состоянии")
     await state.clear()
 
@@ -78,7 +78,7 @@ async def process_edit_mtrx_command(message: Message, state: FSMContext, db_conf
     else:
         await message.answer(
             text=LEXICON['chs_store'],
-            reply_markup=create_list_keyboard(user_data['stores'])
+            reply_markup=create_list_keyboard(user_data['stores'], key='stores')
         )
         await state.set_state(FSMEditMatrix.wait_for_store_chs)
         await state.set_data(user_data)
@@ -100,6 +100,19 @@ async def process_show_store_command(message: Message, state: FSMContext, db_con
         )
         await state.set_state(FSMShowItems.wait_for_method_chs)
         await state.set_data(user_data)
+
+
+@router.message(Command(commands='settings'), StateFilter(default_state))
+async def process_settings_command(message: Message, state: FSMContext, db_conf_data):
+    """This handler processes 'settings' command"""
+    uid = message.from_user.id
+    user_data = db_utils.get_user_data(uid, db_conf_data)
+    await message.answer(
+        text=LEXICON['settings'],
+        reply_markup=create_list_keyboard(user_data['settings'], key='settings')
+    )
+    await state.set_state(FSMSettings.wait_for_setting_chs)
+    await state.set_data(user_data)
 
 
 @router.message(StateFilter(default_state), ~F.text_in_(LEXICON_COMMANDS))

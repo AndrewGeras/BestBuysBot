@@ -60,7 +60,7 @@ async def process_choose_edit_or_del_item(callback: CallbackQuery, state: FSMCon
     action = callback.data
     if item_list:
         await callback.message.edit_text(text=LEXICON[action],
-                                         reply_markup=keyboards.create_list_keyboard(item_list))
+                                         reply_markup=keyboards.create_list_keyboard(item_list, key='items'))
         if action == 'edit_item':
             await state.set_state(FSMstate.edit_item)
         elif action == 'del_item':
@@ -140,7 +140,7 @@ async def process_reject_delete_item(callback: CallbackQuery, state: FSMContext)
     user_data.pop('temp_item', None)
     await state.set_data(user_data)
     await callback.message.edit_text(text=LEXICON['del_item'],
-                                     reply_markup=keyboards.create_list_keyboard(item_list))
+                                     reply_markup=keyboards.create_list_keyboard(item_list, key='items'))
     await state.set_state(FSMstate.delete_item)
 
 

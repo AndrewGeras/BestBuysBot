@@ -41,7 +41,7 @@ async def process_chs_store_mthd_callback(callback: CallbackQuery, state: FSMCon
     user_data = await state.get_data()
     await callback.message.edit_text(
         text=LEXICON['chs_store'],
-        reply_markup=create_list_keyboard(user_data['stores'])
+        reply_markup=create_list_keyboard(user_data['stores'], key='stores')
     )
     await state.set_state(FSMstate.wait_for_store_chs)
 

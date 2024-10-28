@@ -1,3 +1,5 @@
+from locale import currency
+
 from config_data.config import Config, load_config
 from pymongo import MongoClient
 from typing import Any
@@ -10,7 +12,8 @@ def get_user_data(uid: int, conf_data: dict[str, str]):
     default_data = {
         'items': [],
         'stores': [],
-        'matrix': {}
+        'matrix': {},
+        'settings': {'currency': None}
     }
     client = MongoClient(host=conf_data['db_host'])
 

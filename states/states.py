@@ -38,3 +38,8 @@ class FSMEditMatrix(StatesGroup):
 class FSMShowItems(StatesGroup):
     wait_for_method_chs = State()
     wait_for_store_chs = State()
+
+
+class FSMSettings(StatesGroup):
+    wait_for_setting_chs = State()
+    wait_for_send_of_curr = State()
