@@ -154,6 +154,7 @@ def get_best_price(user_data: dict[str, Any]) -> list[dict[str, Any]]:
 
 def get_list_stores(user_data: dict[str, Any]) -> str:
     list_stores = get_best_price(user_data)
+    currency = user_data['settings']['currency']
 
     return "\n\n".join(f'<b>{n}. {item["name"]}:</b>\n\t\t\t\t'
                        f'лучшая цена <b>{item["price"]}</b> в магазине: <b>{" или ".join(item["store"])}</b>'

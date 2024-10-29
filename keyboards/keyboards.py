@@ -62,17 +62,34 @@ def create_list_kb_markup(item_type: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[[add_btn], [edit_btn], [del_btn], [fin_btn]])
 
 
-def create_list_keyboard(items: list[str] | dict[str, dict], key: str) -> InlineKeyboardMarkup:
+def create_list_keyboard(items: list[str] | dict[str, dict], key: str, curr: str | None = None) -> InlineKeyboardMarkup:
     """create list of items or stores as inline keyboard"""
     if key in ('items', 'stores'):
         inline = [[InlineKeyboardButton(text=item, callback_data=item)] for item in items]
     elif key == 'matrix':
-        inline = [[InlineKeyboardButton(text=f"{item} {LEXICON['div']} {price if price else LEXICON['empty']}",
-                                        callback_data=item)]
+        inline = [[InlineKeyboardButton(
+            text=f"{item} {LEXICON['div']} {str(price) + curr if curr else LEXICON['def_curr'] if price else LEXICON['empty']}",
+            callback_data=item)]
                   for item, price in items.items()]
     elif key == 'settings':
         inline = [[InlineKeyboardButton(text=f"{LEXICON[setting]} {LEXICON['div']} {value}",
                                         callback_data=setting)]
                   for setting, value in items.items()]
+    inline.append([InlineKeyboardButton(text=btns['cancel'], callback_data='cancel')])
+    return InlineKeyboardMarkup(inline_keyboard=inline)
+
+
+def get_price(price: int | float | None, currency: str | None) -> str:
+    if price is None:
+        return LEXICON['empty']
+    if currency is None:
+        return f"{price} {LEXICON['def_curr']}"
+    return f"{price} {currency}"
+
+
+def create_price_list(items: dict, currency: str|None):
+    inline = [[InlineKeyboardButton(text=f"{item} {LEXICON['div']} {get_price(price, currency)}",
+                                    callback_data=item)]
+              for item, price in items.items()]
     inline.append([InlineKeyboardButton(text=btns['cancel'], callback_data='cancel')])
     return InlineKeyboardMarkup(inline_keyboard=inline)
