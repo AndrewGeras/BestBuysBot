@@ -31,7 +31,7 @@ LEXICON: dict[str, str] = {
     'edit_item': 'Что нужно изменить?',
     'del_item': 'Что нужно удалить?', #choice_item
     'chs_store': 'Выбери магазин:',
-    'chs_item': 'Выбери товар',
+    'chs_item': 'Выбери товар:',
     'show_method': 'Каким образом мне отобразить список товаров?',
     'list_best_price': 'Вот лучшие предложения:\n\n',
     'list_best_in_store': 'выгоднее покупать:\n\n',

@@ -66,11 +66,7 @@ def create_list_keyboard(items: list[str] | dict[str, dict], key: str, curr: str
     """create list of items or stores as inline keyboard"""
     if key in ('items', 'stores'):
         inline = [[InlineKeyboardButton(text=item, callback_data=item)] for item in items]
-    elif key == 'matrix':
-        inline = [[InlineKeyboardButton(
-            text=f"{item} {LEXICON['div']} {str(price) + curr if curr else LEXICON['def_curr'] if price else LEXICON['empty']}",
-            callback_data=item)]
-                  for item, price in items.items()]
+
     elif key == 'settings':
         inline = [[InlineKeyboardButton(text=f"{LEXICON[setting]} {LEXICON['div']} {value}",
                                         callback_data=setting)]

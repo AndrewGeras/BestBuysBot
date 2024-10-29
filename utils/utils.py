@@ -155,9 +155,12 @@ def get_best_price(user_data: dict[str, Any]) -> list[dict[str, Any]]:
 def get_list_stores(user_data: dict[str, Any]) -> str:
     list_stores = get_best_price(user_data)
     currency = user_data['settings']['currency']
+    if currency is None:
+        currency = LEXICON['def_curr']
 
     return "\n\n".join(f'<b>{n}. {item["name"]}:</b>\n\t\t\t\t'
-                       f'лучшая цена <b>{item["price"]}</b> в магазине: <b>{" или ".join(item["store"])}</b>'
+                       f'лучшая цена <b>{item["price"]} {currency}</b>'
+                       f' в магазин{("е", "ах")[len(item["store"]) > 1]}: <b>{", ".join(item["store"])}</b>'
                        if item["price"] is not None
                        else f'<b>{n}. {item["name"]}:</b>\n\t\t\t\t'
                             f'{LEXICON["empty_data"]}'
@@ -165,12 +168,17 @@ def get_list_stores(user_data: dict[str, Any]) -> str:
 
 
 def get_best_in_store(user_data: dict[str, Any], store: str) -> str:
+    currency = user_data['settings']['currency']
+    if currency is None:
+        currency = LEXICON['def_curr']
+
     if all(price is None for price in user_data['matrix'][store].values()):
         return LEXICON['empty_prices_in_store']
+
     list_items = [item for item in get_best_price(user_data)
                   if store in tuple(item['store'])
                   and item["price"] is not None]
     if list_items:
-        return '\n\n'.join(f'<b>{item["name"]}:</b>\n\t\t\t\tцена: <b>{item["price"]}</b>'
+        return '\n\n'.join(f'<b>{item["name"]}:</b>\n\t\t\t\tцена: <b>{item["price"]} {currency}</b>'
                            for item in list_items)
     return LEXICON['all_expensive']
