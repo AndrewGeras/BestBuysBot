@@ -123,8 +123,7 @@ def save_user_data(uid: int, user_data: dict[str, Any] | list[str], path: str=db
 
 
 def get_item_list(items):
-    return "\n".join(
-        f"<b>{n}. {item}</b>" for n, item in enumerate(items, 1)) if items else "<b>Список пока пуст</b>"
+    return "\n".join(f"{n}. {item}" for n, item in enumerate(items, 1)) if items else "⚠️ список пуст"
 
 
 def get_default_matrix(user_data: dict):
@@ -158,11 +157,11 @@ def get_list_stores(user_data: dict[str, Any]) -> str:
     if currency is None:
         currency = LEXICON['def_curr']
 
-    return "\n\n".join(f'<b>{n}. {item["name"]}:</b>\n\t\t\t\t'
+    return "\n\n".join(f'{n}. <u>{item["name"]}:</u>\n\t\t\t\t'
                        f'лучшая цена <b>{item["price"]} {currency}</b>'
                        f' в магазин{("е", "ах")[len(item["store"]) > 1]}: <b>{", ".join(item["store"])}</b>'
                        if item["price"] is not None
-                       else f'<b>{n}. {item["name"]}:</b>\n\t\t\t\t'
+                       else f'{n}. <u>{item["name"]}:</u>\n\t\t\t\t'
                             f'{LEXICON["empty_data"]}'
                        for n, item in enumerate(list_stores, 1))
 
@@ -179,6 +178,6 @@ def get_best_in_store(user_data: dict[str, Any], store: str) -> str:
                   if store in tuple(item['store'])
                   and item["price"] is not None]
     if list_items:
-        return '\n\n'.join(f'<b>{item["name"]}:</b>\n\t\t\t\tцена: <b>{item["price"]} {currency}</b>'
-                           for item in list_items)
+        return '\n\n'.join(f'{n}. <u>{item["name"]}:</u>\n\t\t\t\tцена: <b>{item["price"]} {currency}</b>'
+                           for n, item in enumerate(list_items, 1))
     return LEXICON['all_expensive']
