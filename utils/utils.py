@@ -91,7 +91,9 @@ def change_user_data(user_data: dict[str, Any], old: str, new: str, key: str) ->
 def get_item_list(items):
     """Returns list of items or stores"""
 
-    return "\n".join(f"{n}. {item}" for n, item in enumerate(sorted(items), 1)) if items else "⚠️ список пуст"
+    return "\n".join(
+        f"{n}. {item}" for n, item in
+        enumerate(sorted(items), 1)) if items else LEXICON['list_is_empty']
 
 
 def is_empty_prices(matrix):

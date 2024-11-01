@@ -40,7 +40,7 @@ async def process_help_command(message: Message):
     await message.answer(text=lexicon.LEXICON['help'])
 
 
-@router.message(Command(commands='edit_item_list'), StateFilter(default_state))
+@router.message(Command(commands='item_list'), StateFilter(default_state))
 async def process_eil_command(message: Message, state: FSMContext, db_conf_data):
     """this handler processes 'edit item list'-command"""
     uid = message.from_user.id
@@ -48,12 +48,12 @@ async def process_eil_command(message: Message, state: FSMContext, db_conf_data)
     await state.set_data(user_data)
 
     await message.answer(
-        text=f"{LEXICON['chg_items']}\n\n{utils.get_item_list(user_data['items'])}",
+        text=f"<b>{LEXICON['chg_items']}</b>\n\n{utils.get_item_list(user_data['items'])}",
         reply_markup=create_list_kb_markup('item'))
     await state.set_state(FSMEditItemsList.waiting_for_choice)
 
 
-@router.message(Command(commands='edit_store_list'), StateFilter(default_state))
+@router.message(Command(commands='store_list'), StateFilter(default_state))
 async def process_esl_command(message: Message, state: FSMContext, db_conf_data):
     """this handler processes 'edit store list'-command"""
     uid = message.from_user.id
@@ -61,12 +61,12 @@ async def process_esl_command(message: Message, state: FSMContext, db_conf_data)
 
     await state.set_data(user_data)
     await message.answer(
-        text=f"{LEXICON['chg_stores']}\n\n{utils.get_item_list(user_data['stores'])}",
+        text=f"<b>{LEXICON['chg_stores']}</b>\n\n{utils.get_item_list(user_data['stores'])}",
         reply_markup=create_list_kb_markup('store'))
     await state.set_state(FSMEditStoreList.waiting_for_choice)
 
 
-@router.message(Command(commands='edit_matrix'), StateFilter(default_state))
+@router.message(Command(commands='price_table'), StateFilter(default_state))
 async def process_edit_mtrx_command(message: Message, state: FSMContext, db_conf_data):
     """This handler processes 'edit matrix'-command"""
     uid = message.from_user.id
@@ -84,7 +84,7 @@ async def process_edit_mtrx_command(message: Message, state: FSMContext, db_conf
         await state.set_data(user_data)
 
 
-@router.message(Command(commands='show_store'), StateFilter(default_state))
+@router.message(Command(commands='shopping_list'), StateFilter(default_state))
 async def process_show_store_command(message: Message, state: FSMContext, db_conf_data):
     """This handler processes 'show_store' command"""
     uid = message.from_user.id
