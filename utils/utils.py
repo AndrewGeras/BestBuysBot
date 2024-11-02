@@ -7,8 +7,7 @@ from lexicon.lexicon import LEXICON
 def greating(user_name: str) -> str:
     """returns the new user greeting"""
 
-    return (f'Привет {user_name}!👋🏻'
-            f'\n{LEXICON["start"]}')
+    return (f'Привет {user_name}!👋🏻\n{LEXICON["start"]}')
 
 
 def update_items(user_data: dict[str, Any]) -> dict[str, Any]:
@@ -142,7 +141,7 @@ def get_best_in_store(user_data: dict[str, Any], store: str) -> str:
         currency = LEXICON['def_curr']
 
     if all(price is None for price in user_data['matrix'][store].values()):
-        return LEXICON['empty_prices_in_store']
+        return f"<b>{LEXICON['empty_prices_in_store']}</b>"
 
     list_items = [item for item in get_best_price(user_data)
                   if store in tuple(item['store'])

@@ -22,7 +22,7 @@ router = Router()
 async def process_stop_input_curr_marker(message: Message, state: FSMContext):
     user_data = await state.get_data()
     await message.answer(
-        text=LEXICON['settings'],
+        text=f"<b>{LEXICON['settings']}</b>",
         reply_markup=keyboards.create_list_keyboard(user_data['settings'], key='settings')
     )
     await state.set_state(FSMstate.wait_for_setting_chs)
@@ -57,7 +57,7 @@ async def process_input_of_curr_marker(message: Message, state: FSMContext):
         settings.update({'currency': text})
         await state.update_data(data={'settings': settings})
         await message.answer(
-            text=LEXICON['settings'],
+            text=f"<b>{LEXICON['settings']}</b>",
             reply_markup=keyboards.create_list_keyboard(user_data['settings'], key='settings')
         )
         await state.set_state(FSMstate.wait_for_setting_chs)

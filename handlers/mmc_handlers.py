@@ -72,12 +72,12 @@ async def process_edit_mtrx_command(message: Message, state: FSMContext, db_conf
     uid = message.from_user.id
     user_data: dict[str, Any] = db_utils.get_user_data(uid, db_conf_data)
     if not user_data['items']:
-        await message.answer(text=LEXICON['fill_item_list'])
+        await message.answer(text=f"<b>{LEXICON['fill_item_list']}</b>")
     elif not user_data['stores']:
-        await message.answer(text=LEXICON['fill_store_list'])
+        await message.answer(text=f"<b>{LEXICON['fill_store_list']}</b>")
     else:
         await message.answer(
-            text=LEXICON['chs_store'],
+            text=f"<b>{LEXICON['chs_store']}</b>",
             reply_markup=create_list_keyboard(user_data['stores'], key='stores')
         )
         await state.set_state(FSMEditMatrix.wait_for_store_chs)
@@ -95,7 +95,7 @@ async def process_show_store_command(message: Message, state: FSMContext, db_con
         await message.answer(text=LEXICON['empty_prices'])
     else:
         await message.answer(
-            text=LEXICON['show_method'],
+            text=f"<b>{LEXICON['show_method']}</b>",
             reply_markup=chs_show_mtd_kb_markup
         )
         await state.set_state(FSMShowItems.wait_for_method_chs)
@@ -108,7 +108,7 @@ async def process_settings_command(message: Message, state: FSMContext, db_conf_
     uid = message.from_user.id
     user_data = db_utils.get_user_data(uid, db_conf_data)
     await message.answer(
-        text=LEXICON['settings'],
+        text=f"<b>{LEXICON['settings']}</b>",
         reply_markup=create_list_keyboard(user_data['settings'], key='settings')
     )
     await state.set_state(FSMSettings.wait_for_setting_chs)

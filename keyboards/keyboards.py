@@ -82,7 +82,7 @@ def get_price(price: int | float | None, currency: str | None) -> str:
         return LEXICON['empty']
     if currency is None:
         return f"{price} {LEXICON['def_curr']}"
-    return f"{price} {currency}"
+    return f"{price:.2f} {currency}"
 
 
 def create_price_list(items: dict, currency: str|None):

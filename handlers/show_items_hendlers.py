@@ -23,7 +23,7 @@ async def process_cancel_callback(callback: CallbackQuery, state: FSMContext):
 @router.callback_query(StateFilter(FSMstate.wait_for_store_chs), F.data == 'cancel')
 async def process_cancel_str_chs_callback(callback: CallbackQuery, state: FSMContext):
     await callback.message.edit_text(
-        text=LEXICON['show_method'],
+        text=f"<b>{LEXICON['show_method']}</b>",
         reply_markup=chs_show_mtd_kb_markup
     )
     await state.set_state(FSMstate.wait_for_method_chs)
@@ -32,7 +32,7 @@ async def process_cancel_str_chs_callback(callback: CallbackQuery, state: FSMCon
 @router.callback_query(StateFilter(FSMstate.wait_for_method_chs), F.data == 'show_list')
 async def process_show_list_callback(callback: CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
-    await callback.message.edit_text(text=f'{LEXICON['list_best_price']} '
+    await callback.message.edit_text(text=f'<b>{LEXICON['list_best_price']}</b> '
                                           f'{utils.get_list_stores(user_data)}')
     await state.clear()
 
